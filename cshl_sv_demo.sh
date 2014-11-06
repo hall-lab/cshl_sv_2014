@@ -7,12 +7,6 @@
 # ===============================================
  
 # -----------------------------------------------
-# 0. Download necessary scripts
- 
-curl -OL https://raw.githubusercontent.com/hall-lab/svtools/master/extractSplitReads_BwaMem
-curl -OL https://raw.githubusercontent.com/arq5x/lumpy-sv/master/scripts/pairend_distro.py
- 
-# -----------------------------------------------
 # 1. Examine library insert size distribution
  
 samtools view -f 0x0023 -F 0x051c NA12878.20.bam \
@@ -20,8 +14,8 @@ samtools view -f 0x0023 -F 0x051c NA12878.20.bam \
     | awk '{ if ($7=="=") print $9 }' \
     > insert_size.txt
  
-Rscript plot_histogram.R
-open histogram.pdf
+Rscript scripts/plot_histogram.R
+open insert_size.txt.pdf
  
 # -----------------------------------------------
 # 2. Generate insert size histograms for LUMPY
