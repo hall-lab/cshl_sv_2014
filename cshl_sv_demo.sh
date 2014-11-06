@@ -14,7 +14,6 @@ samtools view -f 0x0023 -F 0x051c NA12878.20.bam \
     | awk '{ if ($7=="=") print $9 }' \
     > insert_size.txt
 
-#
 Rscript scripts/plot_histogram.R insert_size.txt
 open insert_size.txt.pdf
 
@@ -30,7 +29,7 @@ samtools view NA12878.20.bam \
     -o NA12878.20.histo
 
 # -----------------------------------------------
-# 2. Extract split reads from BAM
+# 3. Extract split reads from BAM
 
 samtools view -h NA12878.20.bam \
     | scripts/extractSplitReads_BwaMem -i stdin \
@@ -39,7 +38,7 @@ samtools view -h NA12878.20.bam \
     > NA12878.20.splitters.bam
 
 # -----------------------------------------------
-# 3. Extract discordant read pairs from BAM
+# 4. Extract discordant read pairs from BAM
 
 samtools view -u -F 0x0002 NA12878.20.bam \
     | samtools view -u -F 0x0100 - \
@@ -59,3 +58,15 @@ lumpy \
     -pe bam_file:NA12878.20.discordants.bam,histo_file:NA12878.20.histo,mean:317.69018183,stdev:72.8912619975,read_length:101,min_non_overlap:101,discordant_z:5,back_distance:10,weight:1,id:10,min_mapping_threshold:20 \
     -sr bam_file:NA12878.20.splitters.bam,back_distance:10,min_mapping_threshold:20,weight:1,id:11,min_clip:20 \
     > NA12878.20.sv.bedpe
+
+# -----------------------------------------------
+# 5. Format for IGV import
+
+# todo.
+
+
+
+
+
+
+
