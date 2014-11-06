@@ -67,7 +67,7 @@ samtools view -u -F 0x0002 NA12878.20.bam \
 lumpy \
     -mw 4 \
     -tt 0 \
-    -pe bam_file:NA12878.20.discordants.bam,histo_file:NA12878.20.histo,mean:317.69018183,stdev:72.8912619975,read_length:101,min_non_overlap:101,discordant_z:5,back_distance:10,weight:1,id:10,min_mapping_threshold:20 \
+    -pe bam_file:NA12878.20.discordants.bam,histo_file:NA12878.20.histo,mean:318.977050061,stdev:73.7166132046,read_length:101,min_non_overlap:101,discordant_z:5,back_distance:10,weight:1,id:10,min_mapping_threshold:20 \
     -sr bam_file:NA12878.20.splitters.bam,back_distance:10,min_mapping_threshold:20,weight:1,id:11,min_clip:20 \
     > NA12878.20.sv.bedpe
 
