@@ -7,6 +7,12 @@
 # ===============================================
 
 # -----------------------------------------------
+# 0. View BAM in IGV
+
+# - Navigate to known deletion, and observe the
+#     alignment patterns around it.
+
+# -----------------------------------------------
 # 1. Examine library insert size distribution
 
 samtools view -f 0x0023 -F 0x051c NA12878.20.bam \
@@ -17,12 +23,18 @@ samtools view -f 0x0023 -F 0x051c NA12878.20.bam \
 Rscript scripts/plot_histogram.R insert_size.txt
 open insert_size.txt.pdf
 
+# - Draw vertical lines on plot to demonstrate threshold
+#     for discordant pairs
+# - Show a poor quality insert distribution (bimodal)
+#     for comparison. Draw vertical lines on this to
+#     demonstrate reduction in power
+
 # -----------------------------------------------
-# 2. Generate insert size histograms for LUMPY
+# 2. Generate insert size histogram for LUMPY
 
 samtools view NA12878.20.bam \
     | sed -n '1000000,2000000p;2000000q' \
-    | python scripts/pairend_distro.py \
+    | scripts/pairend_distro.py \
     -r 101 \
     -X 4 \
     -N 1000000 \
@@ -60,9 +72,33 @@ lumpy \
     > NA12878.20.sv.bedpe
 
 # -----------------------------------------------
-# 5. Format for IGV import
+# 6. Filtering SV calls
 
-# todo.
+# - Evidence type (PE, SR, PE+SR)
+# - Support
+# - Overlap with 1000 Genomes calls
+# - Long-read validation?
+# - SVs that affect a gene
+
+# -----------------------------------------------
+# 7. Format conversions
+
+# - Format for IGV
+# - Convert to VCF
+
+# -----------------------------------------------
+# 8. Read-depth? Genotyping?
+
+# -----------------------------------------------
+# 9. Examine a pre-generated BEDPE of the entire
+#     NA12878 genome?
+
+# -----------------------------------------------
+# 10. Examine a pre-generated BEDPE of a
+#     tumor-normal pair?
+
+# - Filter for somatic SVs affecting a gene
+
 
 
 
