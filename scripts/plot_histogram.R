@@ -1,3 +1,5 @@
+#!/usr/bin/env Rscript
+
 # Draw a histogram from a text file
 args <- commandArgs(trailingOnly=TRUE)
 file <- args[1]
