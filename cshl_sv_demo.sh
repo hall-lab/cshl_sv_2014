@@ -16,7 +16,7 @@
 # 1. Examine library insert size distribution
 
 samtools view -f 0x0023 -F 0x051c NA12878.20.bam \
-    | sed -n '1000000,2000000p;2000000q' \
+    | sed -n '1000001,2000000p;2000000q' \
     | awk '{ if ($7=="=") print $9 }' \
     > insert_size.txt
 
@@ -33,7 +33,7 @@ open insert_size.txt.pdf
 # 2. Generate insert size histogram for LUMPY
 
 samtools view NA12878.20.bam \
-    | sed -n '1000000,2000000p;2000000q' \
+    | sed -n '1000001,2000000p;2000000q' \
     | scripts/pairend_distro.py \
     -r 101 \
     -X 4 \
@@ -45,7 +45,6 @@ samtools view NA12878.20.bam \
 
 samtools view -h NA12878.20.bam \
     | scripts/extractSplitReads_BwaMem -i stdin \
-    | awk '$0~"^@" || $7=="="' \
     | samtools view -Sb - \
     > NA12878.20.splitters.bam
 
@@ -56,9 +55,7 @@ samtools view -u -F 0x0002 NA12878.20.bam \
     | samtools view -u -F 0x0100 - \
     | samtools view -u -F 0x0004 - \
     | samtools view -u -F 0x0008 - \
-    | samtools view -h -F 0x0400 - \
-    | awk '$0~"^@" || $7=="="' \
-    | samtools view -Sb - \
+    | samtools view -b -F 0x0400 - \
     > NA12878.20.discordants.bam
 
 # -----------------------------------------------
