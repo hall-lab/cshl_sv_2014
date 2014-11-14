@@ -8,12 +8,15 @@ cd ~/HALL_2014/results
 # -r is the read length, -N is the number of alignments to use
 # -X is the the number of standard deviations, -o is the output file
 samtools view NA12878.20.bam \
-    | head -n 10000000 \
-    | tail -n 1000000 \
+    | head -n 1000000 \
+    | tail -n 100000 \
     | ~/HALL_2014/bin/pairend_distro.py -r 101 -X 4 -N 100000 -o histo.out
 
 # If you want to be extra careful, plot LUMPY's determination of the size distribution and compare to our own.
 # Notice this is smaller because it does not include one read length
+
+# open a new terminal window (command + N) and open the R program by typing "r" in the terminal
+setwd("~/HALL_2014/results")
 histofile = read.table("histo.out")
 dev.new(); plot(histofile[,1],histofile[,2], type="h")
 
@@ -45,9 +48,9 @@ samtools view -h NA12878.20.bam \
 
 # Questions to talk about while the above command is running:
 # a) How are split-read alignments reported in the bam file?
-# b) Hhat does extractSplitReads_BwaMem do?
-# c) Hhat is a soft-clipped vs. hard-clipped read?
-# d) Hhat fraction of aligned reads have split-read alignments?
+# b) What does extractSplitReads_BwaMem do?
+# c) What is a soft-clipped vs. hard-clipped read?
+# d) What fraction of aligned reads have split-read alignments?
     # There are 31330851 aligned reads in the original bam file that are primary and not duplicates
     # There are 158519 split-read alignments based on samtools flagstat =  0.0051 = 0.51%
 # e) What fraction of readpairs are discordant alignments?
@@ -65,7 +68,7 @@ samtools view -h NA12878.20.bam \
 ~/HALL_2014/bin/lumpy \
     -mw 2 \
     -tt 0 \
-    -pe bam_file:NA12878.20.discordants.bam,histo_file:NA12878.20.histo,mean:318.977050061,stdev:73.7166132046,read_length:101,min_non_overlap:101,discordant_z:5,back_distance:10,weight:1,id:10,min_mapping_threshold:20 \
+    -pe bam_file:NA12878.20.discordants.bam,histo_file:histo.out,mean:319.551326228,stdev:74.2952533362,read_length:101,min_non_overlap:101,discordant_z:5,back_distance:10,weight:1,id:10,min_mapping_threshold:20 \
     -sr bam_file:NA12878.20.splitters.bam,back_distance:10,min_mapping_threshold:20,weight:1,id:11,min_clip:20 \
     > naive.out
 
@@ -75,16 +78,19 @@ samtools view -h NA12878.20.bam \
     -mw 7 \
     -tt 0 \
     -x ../annotations/exclude.b37.bed \
-    -pe bam_file:NA12878.20.discordants.bam,histo_file:NA12878.20.histo,mean:318.977050061,stdev:73.7166132046,read_length:101,min_non_overlap:101,discordant_z:5,back_distance:10,weight:1,id:10,min_mapping_threshold:20 \
+    -pe bam_file:NA12878.20.discordants.bam,histo_file:histo.out,mean:319.551326228,stdev:74.2952533362,read_length:101,min_non_overlap:101,discordant_z:5,back_distance:10,weight:1,id:10,min_mapping_threshold:20 \
     -sr bam_file:NA12878.20.splitters.bam,back_distance:10,min_mapping_threshold:20,weight:1,id:11,min_clip:20 \
     > strict.out
     
 # How many SV breakpoint calls are in the two datasets?
-wc -l *out
-# 3401 naive.out
+wc -l naive.out strict.out
+# 3380 naive.out
 #  126 strict.out
+# 3506 total
+
+#?
 # FYI, running the strict version without the exclude list yields 254
-# FYI, running the naive version with the exclude list yields 2849 calls
+# FYI, running the naive version with the exclude list yields 2828 calls
 
 # Reformat the raw lumpy output file to something more user friendly 
 # (this will not be necessary with next LUMPY version, if Ryan Layer doesn't continue to ignore me)
@@ -120,7 +126,7 @@ wc -l *out
 
 # QUESTION: how many of each variant type were detected in the naive and strict callsets?
 cat breakpoints.naive.bedpe | cut -f 11 | sort | uniq -c
-#  488 DEL
+#  467 DEL
 #   86 DUP
 # 2390 INT
 #  437 INV
