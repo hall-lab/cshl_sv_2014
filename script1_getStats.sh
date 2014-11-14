@@ -87,7 +87,7 @@ cat NA12878.20.bam.flagstat
 # QUESTION: what does the "&" at the end do?
 # ANSWER: the "&" above puts the command in the background, letting you use the terminal while it is running.
 # type "fg" and hit return to bring it back to the foreground; type "jobs" to get a list of running jobs in the background
-samtools view -u -f 0x0002 ~/HALL_2014/alignments/NA12878.20.bam \
+samtools view -u -f 0x0002 NA12878.20.bam \
     | samtools view -u -F 0x0400 - \
     |  samtools view -F 0x0100 - \
     | awk '$9>0' | cut -f 9 \
@@ -96,14 +96,16 @@ samtools view -u -f 0x0002 ~/HALL_2014/alignments/NA12878.20.bam \
 # check the file to make sure it makes sense; it should be composed of positive numbers between 0 and 1000
 cat concordant.size | head
 
+# open a new terminal window (command + N) and open the R program by typing "r" in the terminal
+
 # plot the insert size distribution using a histogram
-setwd("/Users/imh4y/Documents/Presentations/Teaching/CSHL_2014/results")
+setwd("~/HALL_2014/results")
 concordant = scan("concordant.size")
 hist(concordant, breaks = 1:1000)
 
 # zoom in using xlim and ylim
 # need to use quartz() to generate a new plot window
-quartz(); hist(concordant, breaks = 1:1000,xlim = c(0,700), ylim = c(0,100))
+dev.new(); hist(concordant, breaks = 1:1000,xlim = c(0,700), ylim = c(0,100))
 
 # characterize the insert size distribution by running these commands in the R window
 mean(concordant)
@@ -146,9 +148,12 @@ samtools view -u -F 0x0004 NA12878.20.bam \
     | awk '$9>0 && $9<1000' | cut -f 9 \
     | head -n 1000000 | tail -n 100000 > unbiased.size &
 
-setwd("/Users/imh4y/Documents/Presentations/Teaching/CSHL_2014/results") 
+# navigate to the terminal window running R, or open a new window (command + N) and open the R program
+# by typing "r" in the terminal
+
+setwd("~/HALL_2014/results") 
 unbiased = scan("unbiased.size")
-quartz()
+dev.new()
 hist(unbiased, breaks = 1:1000)
 
 # QUESTION: is there a significant different between the two histogram plots?
