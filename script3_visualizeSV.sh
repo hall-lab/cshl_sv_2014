@@ -4,8 +4,8 @@ cd ~/HALL_2014/results
 # 1) GENERATE BREAKPOINT CALLS IN BED12 FORMAT FOR EASY IGV VISUALIZATION
 #----------------------------------------------------------------------------------------------------------
 
-../bin/bedpeToBed12 -i breakpoints.naive.bedpe -n breakpoints.naive > ../ourTracks/breakpoints.naive.bed 
-../bin/bedpeToBed12 -i breakpoints.strict.bedpe -n breakpoints.strict > ../ourTracks/breakpoints.strict.bed 
+~/HALL_2014/bin/bedpeToBed12 -i breakpoints.naive.bedpe -n breakpoints.naive > ../tracks/ourTracks/breakpoints.naive.bed 
+~/HALL_2014/bin/bedpeToBed12 -i breakpoints.strict.bedpe -n breakpoints.strict > ../tracks/ourTracks/breakpoints.strict.bed 
 
 # COLOR KEY: DEL=red; DUP=green; INV=blue; INT=gray
 
@@ -32,7 +32,7 @@ cd ~/HALL_2014/results
 
 # THIRD, change "insert size options" at the bottom; set min to 0 and max to 687 (this is 5 standard deviations)
 
-# FOURTH, load the bamfile: ~/HALL_2014/alignments/NA12878.20.bam
+# FOURTH, load the bamfile: ~/HALL_2014/results/NA12878.20.bam
 
 # FIFTH, load all the .bed files from the following two directories:
 # (the .idx files are index files to make igv faster)
@@ -61,7 +61,7 @@ cd ~/HALL_2014/results
 # This is good way to view a lot of calls in a short period of time without IGV freezing up.
 
 # 2) When you find an variant that is between different chromosomes, right click on discordant read
-# and select "go to mate region in split screen". Right-click near the top to switch back to "standard view".
+# and select "View mate region in split screen". Right-click near the top to switch back to "standard view".
 
 # Can you find any obvious false positives?
 # Can you find any obvious false negatives?
@@ -83,5 +83,5 @@ cd ~/HALL_2014/results
 # This is very useful for visualizing the raw read-depth data. Your eyes are better than most algorithms.  
     # when loading this last file, you'll need to change the view options:
     # right click on the track name at the very left; change windowing function to "none"; 
-    # change data range min to 0, Mid to 2, and Max to 10;
-    # change Track Height to 100 for better visualization
+    # right click on the track name and change data range min to 0, Mid to 2, and Max to 10;
+    # right click on the track name and change Track Height to 100 for better visualization
