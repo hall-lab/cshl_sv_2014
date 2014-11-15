@@ -29,16 +29,17 @@ cat ../annotations/1kg.na12878.sv.merged.bedpe | awk '$1==20' | wc -l
 cat ../annotations/1kg.na12878.sv.merged.bedpe | awk '$1==20' \
     | bedtools pairtopair -a stdin -b deletions.naive.bedpe -type both -is \
     | cut -f 7 | sort -u | wc -l
-#      49
-# 49 / 76 = 0.6447
+#      48
+# Sensitivity: 49 / 76 = 0.6316
 
 # the strict callset
 cat ../annotations/1kg.na12878.sv.merged.bedpe | awk '$1==20' \
     | bedtools pairtopair -a stdin -b deletions.strict.bedpe -type both -is \
     | cut -f 7 | sort -u | wc -l
-# 43 / 76 = 0.5658   
+#      42
+# Sensitivity: 42 / 76 = 0.5526
 
-# If there is time, look at a few 1kg calls that we missed in igv to help us troubleshoot LUMPY.
+# If there is time, look at a few 1kg calls that we missed in IGV to help us troubleshoot LUMPY.
 # And, to discern whether these might actually be false positives in 1kg
 
 #----------------------------------------------------------------------------------------------------------
@@ -50,21 +51,21 @@ cat ../annotations/1kg.na12878.sv.merged.bedpe | awk '$1==20' \
 
 # FIRST, count how many total calls are there in each deletion set?
 wc -l deletions.*.bedpe
-#     488 deletions.naive.bedpe
+#     467 deletions.naive.bedpe
 #      82 deletions.strict.bedpe
 
-# SECOND, count how many were not found by 1kg
+# SECOND, count how many were not found by 1kg.
 bedtools pairtopair -a deletions.naive.bedpe -b ../annotations/1kg.na12878.sv.merged.bedpe -type notboth -is \
     | cut -f 7 | sort -u | wc -l
-# 436
-# 436 / 488 = 0.8934
+# 416
+# False discovery rate (FDR): 416 / 467 = 0.8908
 
 bedtools pairtopair -a deletions.strict.bedpe -b ../annotations/1kg.na12878.sv.merged.bedpe -type notboth -is \
     | cut -f 7 | sort -u | wc -l
-# 39 
-# 39 / 82 = 0.4756
+# 40
+# False discovery rate (FDR): 40 / 82 = 0.4878
 
-# If there is time, look a randomly chosen few of the 39 false positives from the strict dataset?
+# If there is time, look a randomly chosen few of the 40 false positives from the strict dataset?
 # Are these really false positives, or are they variants that were missed by 1kg?
 
 #----------------------------------------------------------------------------------------------------------
@@ -77,7 +78,7 @@ bedtools pairtopair -a deletions.strict.bedpe -b ../annotations/1kg.na12878.sv.m
 #       f) multiple signals (i.e, require paired-end and split-read)
 #       g) independent variant detection tools (intersection, voting schemes)
 #       h) for variant types with two detectable breakpoints (i.e., inversions & reciprocal translocations), 
-#       we can require both to be detected.
+#          we can require both to be detected.
 
-# 4) HOW DO WE TUNE PARAMETERS/FILTERS TO ACHIEVE THE DESIRED TRADEOFF BETWEEN SENSITIVITY AND ACCURACY? 
+# 5) HOW DO WE TUNE PARAMETERS/FILTERS TO ACHIEVE THE DESIRED TRADEOFF BETWEEN SENSITIVITY AND ACCURACY? 
 # see the ROC curve in the practical session slides
