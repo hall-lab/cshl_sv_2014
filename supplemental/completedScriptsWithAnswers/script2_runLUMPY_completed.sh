@@ -80,6 +80,9 @@ samtools view -h NA12878.20.bam \
     
 # How many SV breakpoint calls are in the two datasets?
 wc -l naive.out strict.out
+# 3380 naive.out
+#  126 strict.out
+# 3506 total
 
 # Reformat the raw lumpy output file to something more user friendly 
 # (this will not be necessary with next LUMPY version, if Ryan Layer doesn't continue to ignore me)
@@ -115,9 +118,42 @@ wc -l naive.out strict.out
 
 # QUESTION: how many of each variant type were detected in the naive and strict callsets?
 cat breakpoints.naive.bedpe | cut -f 11 | sort | uniq -c
+#  467 DEL
+#   86 DUP
+# 2390 INT
+#  437 INV
 
 cat breakpoints.strict.bedpe | cut -f 11 | sort | uniq -c
-
+#  82 DEL
+#  12 DUP
+#  27 INT
+#   5 INV
 
 # QUESTION TO DISCUSS: Why are the datasets so different?
+
+# SOME INFORMATIVE FACTS:
+# Running the strict version without the exclude list yields 254 rather than 126 calls
+# Running the naive version with the exclude list yields 2828 calls (rather than 3380)
+
+# Here is the variant breakdown on the whole-genome LUMPY run, with and without excluded regions:
+
+
+# Whole genome, no excluded regions, 7 reads of support (you don't have this file)
+cat NA12878_S1.noexclude.lumpy.bedpe | awk '$8>=7' | cut -f 11 | sort | uniq -c
+# 3667 DEL
+# 1028 DUP
+# 2175 INT
+#  698 INV
+# TOTAL = 7568
+
+# Whole genome, with excluded regions, 7 reads of support:
+cat ../supplemental/NA12878.lumpy.bedpe | cut -f 11 | sort | uniq -c
+# 3001 DEL
+# 447 DUP
+# 609 INT
+# 457 INV
+# TOTAL = 4514
+
+# Thus, the ~10,000 high read-depth excluded regions comprise only 0.34% of the genome 
+# But, ~40% of LUMPY calls are found in these regions. How many of these do you think are real variants?
 

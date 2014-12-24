@@ -20,6 +20,7 @@ cat breakpoints.strict.bedpe | awk '$11=="DEL"' | cut -f 1,2,6,7 > deletions.str
 # Use bedtools pairtopair for this (see slide on bedtools commands)
 # FIRST, count how many 1kg calls are on chr20:
 cat ../annotations/1kg.na12878.sv.merged.bedpe | awk '$1==20' | wc -l
+#      76
 
 # SECOND, count how many 1kg calls were found in our dataset:
 # Why do we need to count unique occurences of the ID field?
@@ -28,12 +29,15 @@ cat ../annotations/1kg.na12878.sv.merged.bedpe | awk '$1==20' | wc -l
 cat ../annotations/1kg.na12878.sv.merged.bedpe | awk '$1==20' \
     | bedtools pairtopair -a stdin -b deletions.naive.bedpe -type both -is \
     | cut -f 7 | sort -u | wc -l
-
+#      48
+# Sensitivity: 48 / 76 = 0.6316
 
 # the strict callset
 cat ../annotations/1kg.na12878.sv.merged.bedpe | awk '$1==20' \
     | bedtools pairtopair -a stdin -b deletions.strict.bedpe -type both -is \
     | cut -f 7 | sort -u | wc -l
+#      42
+# Sensitivity: 42 / 76 = 0.5526
 
 # If there is time, look at a few 1kg calls that we missed in IGV to help us troubleshoot LUMPY.
 # And, to discern whether these might actually be false positives in 1kg
@@ -47,14 +51,19 @@ cat ../annotations/1kg.na12878.sv.merged.bedpe | awk '$1==20' \
 
 # FIRST, count how many total calls are there in each deletion set?
 wc -l deletions.*.bedpe
-
+#     467 deletions.naive.bedpe
+#      82 deletions.strict.bedpe
 
 # SECOND, count how many were not found by 1kg.
 bedtools pairtopair -a deletions.naive.bedpe -b ../annotations/1kg.na12878.sv.merged.bedpe -type notboth -is \
     | cut -f 7 | sort -u | wc -l
+# 416
+# False discovery rate (FDR): 416 / 467 = 0.8908
 
 bedtools pairtopair -a deletions.strict.bedpe -b ../annotations/1kg.na12878.sv.merged.bedpe -type notboth -is \
     | cut -f 7 | sort -u | wc -l
+# 40
+# False discovery rate (FDR): 40 / 82 = 0.4878
 
 # If there is time, look a randomly chosen few of the false positives from the strict dataset?
 # Are these really false positives, or are they variants that were missed by 1kg?

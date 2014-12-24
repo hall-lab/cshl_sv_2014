@@ -64,6 +64,19 @@ samtools flags
 samtools flagstat NA12878.20.bam > NA12878.20.bam.flagstat
 
 cat NA12878.20.bam.flagstat
+#31776951 + 0 in total (QC-passed reads + QC-failed reads)
+#192207 + 0 secondary
+#0 + 0 supplimentary
+#178569 + 0 duplicates
+#31689975 + 0 mapped (99.73%:nan%)
+#31584744 + 0 paired in sequencing
+#15792372 + 0 read1
+#15792372 + 0 read2
+#30709224 + 0 properly paired (97.23%:nan%)
+#31410792 + 0 with itself and mate mapped
+#86976 + 0 singletons (0.28%:nan%)
+#502518 + 0 with mate mapped to a different chr
+#216020 + 0 with mate mapped to a different chr (mapQ>=5)
 
 # QUESTION: what does each line mean? 
 # QUESTION: why are there are two numbers on each line (the latter of which is zero)?
@@ -106,12 +119,25 @@ mad(concordant)
 min(concordant)
 max(concordant)
 
+# > mean(concordant)
+# [1] 319.9139
+# > sd(concordant)
+# [1] 73.49944
+# > median(concordant)
+# [1] 321
+# > mad(concordant)
+# [1] 65.2344
+# > min(concordant)
+# [1] 19
+# > max(concordant)
+# [1] 866
+
 # QUESTION: how do we define "concordant" (or "properly paired") vs. "discordant" alignments
 # ANSWER: usually the mean insert size +/- 4 or 5 standard deviations. We'll use 5 standard deviations.
 # Now we'll calculate the minimum and maximum fragment length for concordant mappings.
 # 319.9139 + (5 * 73.49944) = 687.4111; thus, 687 is the maximum insert size of a concordant readpair
 # 319.9139 - (5 * 73.49944) = -47.5833; 0 is the minimum size of a concordant readpair.
-# Or, we can define discordants as the median +/- ~8 median absolute deviations. This is less sensitive to outliers.
+# Or, we can define discordants as the median +/- 5-10 median absolute deviations. This is less sensitive to outliers.
 
 # QUESTION: why is there one "concordant" fragment at size 866 when this is clearly outside the normal distribution?
 
@@ -156,21 +182,26 @@ hist(unbiased, breaks = 1:1000)
 # How many read-pairs are there that are not duplicates? 
 # We can't tell this from the samtools flagstat results so we'll count ourselves
 # QUESTION: what does each line of this command do?
+# ANSWER: not secondary alignment, query not unmapped, mate not unmapped, not a duplicate, first read in pair
 samtools view -u -F 0x100 NA12878.20.bam \
     | samtools view -u -F 0x4 - \
     | samtools view -u -F 0x8 - \
     | samtools view -u -F 0x400 - \
     | samtools view -F 0x40 - \
     | wc -l
+# 15622923 read-pairs of mean insert size 319.9139 bp
 
 # Now calculate physical coverage for the haploid genome (chr20)
 # This is the number of readpairs multiplied by the mean insert size, divided by genome size (chr20 size)
+(15622923*319.9139)/63025520
+# = 79.3011X coverage
 # Physical coverage for the diploid genome is half that
 
-# However, this calculation uses the "outer span" and does not account for the aligned reads, 
-# which are necessary to detect an SV breakpoint
+# However, this calculation uses the "outer span" and does not account for the aligned reads, which are necessary to detect an SV breakpoint
 # How many times is each base, on average, spanned by an aligned read-pair?  
 # We refer this as "spanning coverage" to distinguish it from physical coverage
+(15622923*(319.9139-202))/63025520
+# 29.2288  for haploid genome, half that for diploid
 
 # QUESTION: how many read-pairs will detect the average heterozygous breakpoint? 
 # Since aligners can align small (~25-50) portions of reads to the reference genome, 
